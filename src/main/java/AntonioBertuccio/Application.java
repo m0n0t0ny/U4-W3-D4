@@ -7,7 +7,6 @@ import javax.persistence.Persistence;
 
 import AntonioBertuccio.dao.*;
 import AntonioBertuccio.entities.*;
-import AntonioBertuccio.enums.Genre;
 
 import java.time.LocalDate;
 
@@ -24,6 +23,7 @@ public class Application {
     LoanDAO loanDAO = new LoanDAO(emf);
 
     User user = new User("Chiara", "Puleio", LocalDate.of(1994, 10, 29));
+    userDAO.save(user);
 
     // 📚 Aggiunta nuovi elementi
 //    Book book = new Book();

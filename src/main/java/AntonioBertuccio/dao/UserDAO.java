@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 public class UserDAO {
   private final EntityManagerFactory emf;
@@ -15,18 +16,17 @@ public class UserDAO {
     this.emf = emf;
   }
 
-  public void addUser(User user) {
+  public void save(User user) {
     EntityManager em = emf.createEntityManager();
-    em.getTransaction().begin();
-    try {
-      em.persist(user);
-      em.getTransaction().commit();
-    } catch (Exception e) {
-      logger.error("Errore nell'aggiungere l'utente: ", e);
-      em.getTransaction().rollback();
-    } finally {
-      em.close();
-    }
+    EntityTransaction transaction = em.getTransaction();
+    System.out.println("⚪ Initializing transaction.");
+    transaction.begin();
+    System.out.println("⚪ Adding new object to Persistence Context.");
+    em.persist(user);
+    System.out.println("⚪ Writing to the database.");
+    transaction.commit();
+    System.out.println("🟢 New data added.");
+    em.close();
   }
 
   public User findUserByCardNumber(String cardNumber) {
