@@ -45,6 +45,10 @@ public class Application {
       System.out.println("❌ Nessun libro trovato con ISBN: " + searchIsbn);
     }
 
+    // 🗑 Rimuovi elemento per ISBN
+    String isbnToRemove = "9791828958550";
+    catalogDAO.deleteCatalogItemByIsbn(isbnToRemove);
+
     System.out.println("🔴 Chiusura dell EntityManagerFactory alla fine dell'applicazione");
     emf.close();
   }
