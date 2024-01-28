@@ -19,4 +19,8 @@ public class Magazine extends Catalog {
   }
 
   public Magazine(){}
+
+  public Magazine(Periodicity periodicity) {
+    this.periodicity = periodicity;
+  }
 }

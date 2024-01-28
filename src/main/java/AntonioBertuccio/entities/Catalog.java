@@ -10,6 +10,9 @@ public abstract class Catalog {
   private int year;
   private int pages;
 
+  public Catalog() {
+  }
+
   public String getIsbn() {
     return isbn;
   }
@@ -31,6 +34,12 @@ public abstract class Catalog {
   }
 
   public void setPages(int pages) {
+    this.pages = pages;
+  }
+
+  public Catalog(String isbn, int year, int pages) {
+    this.isbn = isbn;
+    this.year = year;
     this.pages = pages;
   }
 }
