@@ -69,6 +69,20 @@ public class Application {
       System.out.println("🔴 Nessun elemento trovato con anno di pubblicazione " + searchYear);
     }
 
+    // 🔎 Ricerca per autore
+    String searchAuthor = "Willie Nader";
+    List<Book> booksByAuthor = bookDAO.searchByAuthor(searchAuthor);
+
+    if (booksByAuthor != null && !booksByAuthor.isEmpty()) {
+      System.out.println("🟢 Libri dell'autore " + searchAuthor + " trovati:");
+
+      for (Book bookItem : booksByAuthor) {
+        System.out.println("⚪ Titolo: " + bookItem.getTitle() + ", Autore: " + bookItem.getAuthor());
+      }
+    } else {
+      System.out.println("🔴 Nessun libro trovato dell'autore " + searchAuthor);
+    }
+
     System.out.println("🔴 Chiusura dell EntityManagerFactory alla fine dell'applicazione");
     emf.close();
   }

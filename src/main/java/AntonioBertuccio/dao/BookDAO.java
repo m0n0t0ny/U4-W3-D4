@@ -37,11 +37,12 @@ public class BookDAO {
     catalogDAO.deleteByIsbn(isbn);
   }
 
-  public List<Book> findByAuthor(String author) {
+  public List<Book> searchByAuthor(String author) {
     EntityManager em = emf.createEntityManager();
     try {
-      TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b WHERE b.author = :author", Book.class);
-      query.setParameter("author", author);
+      TypedQuery<Book> query = em.createQuery(
+              "SELECT b FROM Book b WHERE b.author LIKE :author", Book.class);
+      query.setParameter("author", "%" + author + "%");
       return query.getResultList();
     } catch (Exception e) {
       logger.error("🔴 Errore nella ricerca per autore: ", e);
@@ -51,7 +52,7 @@ public class BookDAO {
     }
   }
 
-  public List<Book> findByGenre(String genre) {
+  public List<Book> searchByGenre(String genre) {
     EntityManager em = emf.createEntityManager();
     try {
       TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b WHERE b.genre = :genre", Book.class);
