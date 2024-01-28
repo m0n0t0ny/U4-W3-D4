@@ -20,7 +20,9 @@ public class Magazine extends Catalog {
 
   public Magazine(){}
 
-  public Magazine(Periodicity periodicity) {
+  public Magazine(String isbn, int year, int pages, Periodicity periodicity) {
+    super(isbn, year, pages);
     this.periodicity = periodicity;
   }
+
 }

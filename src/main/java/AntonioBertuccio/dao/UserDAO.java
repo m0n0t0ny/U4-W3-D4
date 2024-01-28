@@ -21,9 +21,9 @@ public class UserDAO {
     EntityTransaction transaction = em.getTransaction();
     System.out.println("⚪ Initializing transaction.");
     transaction.begin();
-    System.out.println("⚪ Adding new object to Persistence Context.");
+    System.out.println("⚪ Adding new object User to Persistence Context.");
     em.persist(user);
-    System.out.println("⚪ Writing to the database.");
+    System.out.println("⚪ Saving new User.");
     transaction.commit();
     System.out.println("🟢 New data added.");
     em.close();

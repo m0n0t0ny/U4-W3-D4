@@ -8,6 +8,7 @@ import javax.persistence.Persistence;
 import AntonioBertuccio.dao.*;
 import AntonioBertuccio.entities.*;
 import AntonioBertuccio.enums.Genre;
+import AntonioBertuccio.enums.Periodicity;
 
 import java.time.LocalDate;
 
@@ -23,12 +24,17 @@ public class Application {
     UserDAO userDAO = new UserDAO(emf);
     LoanDAO loanDAO = new LoanDAO(emf);
 
-//    👤 Creazione utente
+    // 👤 Aggiungi utente
     User user = new User("Antonio", "Bertuccio", LocalDate.of(1992, 4, 4));
     userDAO.save(user);
 
-    // 📚 Aggiunta nuovi elementi
-    Book book = new Book("1234567890111",1948,999,"1984","George Orwell", Genre.SCIENCE_FICTION);
+    // 📚 Aggiungi libro
+    Book book = new Book("1984",1948,999,"George Orwell", Genre.SCIENCE_FICTION);
+    bookDAO.addBook(book);
+
+    // 📰 Aggiungi rivista
+    Magazine magazine = new Magazine("0987654321098",2023,45, Periodicity.MONTHLY);
+    magazineDAO.addMagazine(magazine);
 
     // 🔎 Ricerca libri per ISBN
 //    String isbnToSearch = "1234567890123";

@@ -10,20 +10,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "books")
 public class Book extends Catalog {
-  private String title;
   private String author;
   @Enumerated(EnumType.STRING)
-  private String genre;
+  private Genre genre;
 
   public Book() {
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
   }
 
   public String getAuthor() {
@@ -34,18 +25,17 @@ public class Book extends Catalog {
     this.author = author;
   }
 
-  public String getGenre() {
+  public Genre getGenre() {
     return genre;
   }
 
-  public void setGenre(String genre) {
+  public void setGenre(Genre genre) {
     this.genre = genre;
   }
 
-  public Book(String isbn, int year, int pages, String title, String author, Genre genre) {
-    super(isbn, year, pages);
-    this.title = title;
+  public Book(String title, int year, int pages, String author, Genre genre) {
+    super(title, year, pages);
     this.author = author;
-    this.genre = genre.toString();
+    this.genre = genre;
   }
 }

@@ -6,19 +6,21 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Catalog {
   @Id
+  @GeneratedValue
   private String isbn;
+  private String title;
   private int year;
   private int pages;
 
   public Catalog() {
   }
 
-  public String getIsbn() {
-    return isbn;
+  public String getTitle() {
+    return title;
   }
 
-  public void setIsbn(String isbn) {
-    this.isbn = isbn;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public int getYear() {
@@ -37,8 +39,8 @@ public abstract class Catalog {
     this.pages = pages;
   }
 
-  public Catalog(String isbn, int year, int pages) {
-    this.isbn = isbn;
+  public Catalog(String title, int year, int pages) {
+    this.title = title;
     this.year = year;
     this.pages = pages;
   }

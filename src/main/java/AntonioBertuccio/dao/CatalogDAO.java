@@ -1,13 +1,11 @@
 package AntonioBertuccio.dao;
 
 import AntonioBertuccio.entities.Catalog;
+import AntonioBertuccio.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.List;
 
 public class CatalogDAO {
@@ -15,7 +13,7 @@ public class CatalogDAO {
   private static final Logger logger = LoggerFactory.getLogger(CatalogDAO.class);
 
   public CatalogDAO(EntityManagerFactory emf) {
-    this.emf = Persistence.createEntityManagerFactory("u4w3d4");
+    this.emf = emf;
   }
 
   public void addCatalogItem(Catalog item) {
@@ -70,6 +68,12 @@ public class CatalogDAO {
       return null;
     } finally {
       em.close();
+    }
+  }
+
+  public void closeEntityManagerFactory() {
+    if (emf != null && emf.isOpen()) {
+      emf.close();
     }
   }
 }
