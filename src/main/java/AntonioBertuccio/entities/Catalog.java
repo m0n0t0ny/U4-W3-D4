@@ -1,18 +1,27 @@
 package AntonioBertuccio.entities;
 
+import com.github.javafaker.Faker;
+
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Catalog {
   @Id
-  @GeneratedValue
   private String isbn;
   private String title;
   private int year;
   private int pages;
 
   public Catalog() {
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
   }
 
   public String getTitle() {
@@ -40,6 +49,8 @@ public abstract class Catalog {
   }
 
   public Catalog(String title, int year, int pages) {
+    Faker faker = new Faker();
+    this.isbn = faker.code().isbn13();
     this.title = title;
     this.year = year;
     this.pages = pages;

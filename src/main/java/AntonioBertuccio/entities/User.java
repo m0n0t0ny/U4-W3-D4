@@ -2,6 +2,7 @@ package AntonioBertuccio.entities;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,14 +18,14 @@ public class User {
   @Column(name = "last_name")
   private String lastName;
   @Column(name = "date_of_birth")
-  private LocalDate dateOfBirth;
+  private Date dateOfBirth;
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Loan> loans;
 
   public User() {
   }
 
-  public User(String firstName, String lastName, LocalDate dateOfBirth) {
+  public User(String firstName, String lastName, Date dateOfBirth) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.dateOfBirth = dateOfBirth;
@@ -46,11 +47,11 @@ public class User {
     this.lastName = lastName;
   }
 
-  public LocalDate getDateOfBirth() {
+  public Date getDateOfBirth() {
     return dateOfBirth;
   }
 
-  public void setDateOfBirth(LocalDate dateOfBirth) {
+  public void setDateOfBirth(Date dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
   }
 

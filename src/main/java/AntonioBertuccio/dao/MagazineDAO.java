@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MagazineDAO {
   private final CatalogDAO catalogDAO;
-  private final EntityManagerFactory emf;  // Aggiungi questa linea
+  private final EntityManagerFactory emf;
   private static final Logger logger = LoggerFactory.getLogger(MagazineDAO.class);
 
   public MagazineDAO(EntityManagerFactory emf) {
@@ -25,7 +25,7 @@ public class MagazineDAO {
   }
 
   public Magazine findMagazineByIsbn(String isbn) {
-    Catalog item = catalogDAO.findCatalogItemByIsbn(isbn);
+    Catalog item = catalogDAO.searchByIsbn(isbn);
     if (item instanceof Magazine) {
       return (Magazine) item;
     } else {
@@ -37,8 +37,9 @@ public class MagazineDAO {
   public void deleteByIsbn(String isbn) {
     catalogDAO.deleteCatalogItemByIsbn(isbn);
   }
+
   public List<Magazine> searchByTitle(String title) {
-    EntityManager em = emf.createEntityManager();
+    EntityManager em = emf.createEntityManager(); // Use the EntityManagerFactory from the MagazineDAO
     try {
       TypedQuery<Magazine> query = em.createQuery(
               "SELECT m FROM Magazine m WHERE LOWER(m.title) LIKE LOWER(:title)", Magazine.class);

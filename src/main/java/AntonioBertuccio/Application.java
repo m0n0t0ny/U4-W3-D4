@@ -1,16 +1,15 @@
 package AntonioBertuccio;
 
-import AntonioBertuccio.dao.UserDAO;
+import AntonioBertuccio.dao.*;
+import AntonioBertuccio.entities.Book;
+import AntonioBertuccio.entities.Magazine;
+import AntonioBertuccio.entities.User;
+import AntonioBertuccio.enums.Periodicity;
+import com.github.javafaker.Faker;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import AntonioBertuccio.dao.*;
-import AntonioBertuccio.entities.*;
-import AntonioBertuccio.enums.Genre;
-import AntonioBertuccio.enums.Periodicity;
-
-import java.time.LocalDate;
+import java.util.Random;
 
 public class Application {
   public static void main(String[] args) {
@@ -18,6 +17,7 @@ public class Application {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("u4w3d4");
 
     System.out.println("Creazione DAO...");
+    Faker faker = new Faker();
     CatalogDAO catalogDAO = new CatalogDAO(emf);
     BookDAO bookDAO = new BookDAO(emf);
     MagazineDAO magazineDAO = new MagazineDAO(emf);
@@ -25,27 +25,33 @@ public class Application {
     LoanDAO loanDAO = new LoanDAO(emf);
 
     // 👤 Aggiungi utente
-    User user = new User("Antonio", "Bertuccio", LocalDate.of(1992, 4, 4));
+    User user = new User(faker.name().firstName(), faker.name().lastName(), faker.date().birthday(18, 99));
     userDAO.save(user);
 
     // 📚 Aggiungi libro
-    Book book = new Book("1984",1948,999,"George Orwell", Genre.SCIENCE_FICTION);
+    Book book = new Book(faker.book().title(), faker.number().numberBetween(1900, 2024), faker.number().numberBetween(20, 2000), faker.book().author(), faker.book().genre());
     bookDAO.addBook(book);
 
     // 📰 Aggiungi rivista
-    Magazine magazine = new Magazine("0987654321098",2023,45, Periodicity.MONTHLY);
+    Magazine magazine = new Magazine(faker.book().title(), faker.number().numberBetween(2010, 2024), faker.number().numberBetween(10, 100), getRandomPeriodicity());
     magazineDAO.addMagazine(magazine);
 
     // 🔎 Ricerca libri per ISBN
-//    String isbnToSearch = "1234567890123";
-//    Book foundBook = bookDAO.findBookByIsbn(isbnToSearch);
-//    if (foundBook != null) {
-//      System.out.println("Libro trovato: " + foundBook.getTitle());
-//    } else {
-//      System.out.println("Nessun libro trovato con ISBN: " + isbnToSearch);
-//    }
+    String searchIsbn = "9791828958550";
+    Book foundBook = bookDAO.findBookByIsbn(searchIsbn);
+    if (foundBook != null) {
+      System.out.println("🟢 L'ISBN corrisponde al libro: " + foundBook.getTitle());
+    } else {
+      System.out.println("❌ Nessun libro trovato con ISBN: " + searchIsbn);
+    }
 
-    System.out.println("Chiusura dell EntityManagerFactory alla fine dell'applicazione");
+    System.out.println("🔴 Chiusura dell EntityManagerFactory alla fine dell'applicazione");
     emf.close();
+  }
+
+  private static Periodicity getRandomPeriodicity() {
+    Periodicity[] values = Periodicity.values();
+    int randomIndex = new Random().nextInt(values.length);
+    return values[randomIndex];
   }
 }

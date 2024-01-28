@@ -1,18 +1,13 @@
 package AntonioBertuccio.entities;
 
-import AntonioBertuccio.enums.Genre;
-
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "books")
 public class Book extends Catalog {
   private String author;
-  @Enumerated(EnumType.STRING)
-  private Genre genre;
+  private String genre;
 
   public Book() {
   }
@@ -25,15 +20,15 @@ public class Book extends Catalog {
     this.author = author;
   }
 
-  public Genre getGenre() {
+  public String getGenre() {
     return genre;
   }
 
-  public void setGenre(Genre genre) {
+  public void setGenre(String genre) {
     this.genre = genre;
   }
 
-  public Book(String title, int year, int pages, String author, Genre genre) {
+  public Book(String title, int year, int pages, String author, String genre) {
     super(title, year, pages);
     this.author = author;
     this.genre = genre;

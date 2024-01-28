@@ -25,7 +25,7 @@ public class BookDAO {
   }
 
   public Book findBookByIsbn(String isbn) {
-    Catalog item = catalogDAO.findCatalogItemByIsbn(isbn);
+    Catalog item = catalogDAO.searchByIsbn(isbn);
     if (item instanceof Book) {
       return (Book) item;
     } else {

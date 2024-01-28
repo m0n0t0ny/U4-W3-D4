@@ -18,19 +18,21 @@ public class CatalogDAO {
 
   public void addCatalogItem(Catalog item) {
     EntityManager em = emf.createEntityManager();
-    em.getTransaction().begin();
     try {
+      em.getTransaction().begin();
       em.persist(item);
       em.getTransaction().commit();
     } catch (Exception e) {
       logger.error("Errore nell'aggiungere l'elemento: ", e);
-      em.getTransaction().rollback();
+      if (em.getTransaction().isActive()) {
+        em.getTransaction().rollback();
+      }
     } finally {
       em.close();
     }
   }
 
-  public Catalog findCatalogItemByIsbn(String isbn) {
+  public Catalog searchByIsbn(String isbn) {
     EntityManager em = emf.createEntityManager();
     try {
       return em.find(Catalog.class, isbn);
@@ -41,8 +43,8 @@ public class CatalogDAO {
 
   public void deleteCatalogItemByIsbn(String isbn) {
     EntityManager em = emf.createEntityManager();
-    em.getTransaction().begin();
     try {
+      em.getTransaction().begin();
       Catalog item = em.find(Catalog.class, isbn);
       if (item != null) {
         em.remove(item);
@@ -50,7 +52,9 @@ public class CatalogDAO {
       em.getTransaction().commit();
     } catch (Exception e) {
       logger.error("Errore nella rimozione dell'elemento con ISBN: " + isbn, e);
-      em.getTransaction().rollback();
+      if (em.getTransaction().isActive()) {
+        em.getTransaction().rollback();
+      }
     } finally {
       em.close();
     }

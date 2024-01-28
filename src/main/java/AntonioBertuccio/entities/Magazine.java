@@ -10,6 +10,8 @@ public class Magazine extends Catalog {
   @Enumerated(EnumType.STRING)
   private Periodicity periodicity;
 
+  public Magazine(){}
+
   public Periodicity getPeriodicity() {
     return periodicity;
   }
@@ -18,11 +20,8 @@ public class Magazine extends Catalog {
     this.periodicity = periodicity;
   }
 
-  public Magazine(){}
-
-  public Magazine(String isbn, int year, int pages, Periodicity periodicity) {
-    super(isbn, year, pages);
+  public Magazine(String title, int year, int pages, Periodicity periodicity) {
+    super(title, year, pages);
     this.periodicity = periodicity;
   }
-
 }
