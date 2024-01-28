@@ -65,19 +65,4 @@ public class BookDAO {
       em.close();
     }
   }
-
-  public List<Book> searchByTitle(String title) {
-    EntityManager em = emf.createEntityManager();
-    try {
-      TypedQuery<Book> query = em.createQuery(
-              "SELECT b FROM Book b WHERE LOWER(b.title) LIKE LOWER(:title)", Book.class);
-      query.setParameter("title", "%" + title + "%");
-      return query.getResultList();
-    } catch (Exception e) {
-      logger.error("🔴 Errore nella ricerca per titolo: ", e);
-      return null;
-    } finally {
-      em.close();
-    }
-  }
 }

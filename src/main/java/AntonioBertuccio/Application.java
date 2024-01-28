@@ -2,9 +2,9 @@ package AntonioBertuccio;
 
 import AntonioBertuccio.dao.*;
 import AntonioBertuccio.entities.Book;
+import AntonioBertuccio.entities.Catalog;
 import AntonioBertuccio.entities.Magazine;
 import AntonioBertuccio.entities.User;
-import AntonioBertuccio.entities.Catalog;
 import AntonioBertuccio.enums.Periodicity;
 import com.github.javafaker.Faker;
 
@@ -42,11 +42,11 @@ public class Application {
     String isbnToRemove = "9791828958550";
     catalogDAO.deleteByIsbn(isbnToRemove);
 
-    // 🔎 Ricerca libri per ISBN
+    // 🔎 Ricerca per ISBN
     String searchIsbn = "9791828958550";
-    Book foundBook = bookDAO.findBookByIsbn(searchIsbn);
-    if (foundBook != null) {
-      System.out.println("🟢 L'ISBN corrisponde al libro: " + foundBook.getTitle());
+    Book foundItem = bookDAO.findBookByIsbn(searchIsbn);
+    if (foundItem != null) {
+      System.out.println("🟢 L'ISBN corrisponde al libro: " + foundItem.getTitle());
     } else {
       System.out.println("❌ Nessun libro trovato con ISBN: " + searchIsbn);
     }
@@ -69,7 +69,7 @@ public class Application {
       System.out.println("🔴 Nessun elemento trovato con anno di pubblicazione " + searchYear);
     }
 
-    // 🔎 Ricerca per autore
+    // 🔎 Ricerca per autore (libro)
     String searchAuthor = "Willie Nader";
     List<Book> booksByAuthor = bookDAO.searchByAuthor(searchAuthor);
 
@@ -82,6 +82,25 @@ public class Application {
     } else {
       System.out.println("🔴 Nessun libro trovato dell'autore " + searchAuthor);
     }
+
+    // 🔎 Ricerca per titolo
+    String searchKeyword = "the";
+    List<Catalog> foundItemsWithWord = catalogDAO.searchByTitle(searchKeyword);
+
+    if (foundItemsWithWord != null && !foundItemsWithWord.isEmpty()) {
+      System.out.println("🟢 Sono stati trovati elementi contenenti la parola '" + searchKeyword + "' nel titolo:");
+
+      for (Catalog item : foundItemsWithWord) {
+        if (item instanceof Book) {
+          System.out.println("⚪ Titolo del libro: " + item.getTitle() + ", Autore: " + ((Book) item).getAuthor());
+        } else if (item instanceof Magazine) {
+          System.out.println("⚪ Titolo della rivista: " + item.getTitle() + ", Periodicità: " + ((Magazine) item).getPeriodicity());
+        }
+      }
+    } else {
+      System.out.println("🔴 Nessun elemento trovato che contenga la parola '" + searchKeyword + "' all'interno del proprio titolo.");
+    }
+
 
     System.out.println("🔴 Chiusura dell EntityManagerFactory alla fine dell'applicazione");
     emf.close();

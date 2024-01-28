@@ -62,21 +62,6 @@ public class CatalogDAO {
     }
   }
 
-  public List<Catalog> searchByTitle(String title) {
-    EntityManager em = emf.createEntityManager();
-    try {
-      TypedQuery<Catalog> query = em.createQuery(
-              "SELECT c FROM Catalog c WHERE LOWER(c.title) LIKE LOWER(:title)", Catalog.class);
-      query.setParameter("title", "%" + title + "%");
-      return query.getResultList();
-    } catch (Exception e) {
-      logger.error("🔴 Errore nella ricerca per titolo: ", e);
-      return null;
-    } finally {
-      em.close();
-    }
-  }
-
   public List<Catalog> searchByYear(int year) {
     EntityManager em = emf.createEntityManager();
     try {
@@ -86,6 +71,21 @@ public class CatalogDAO {
       return query.getResultList();
     } catch (Exception e) {
       logger.error("🔴 Errore nella ricerca per anno: " + year, e);
+      return null;
+    } finally {
+      em.close();
+    }
+  }
+
+  public List<Catalog> searchByTitle(String titleKeyword) {
+    EntityManager em = emf.createEntityManager();
+    try {
+      TypedQuery<Catalog> query = em.createQuery(
+              "SELECT c FROM Catalog c WHERE c.title LIKE :keyword", Catalog.class);
+      query.setParameter("keyword", "%" + titleKeyword + "%");
+      return query.getResultList();
+    } catch (Exception e) {
+      logger.error("🔴 Errore nella ricerca per titolo: ", e);
       return null;
     } finally {
       em.close();
