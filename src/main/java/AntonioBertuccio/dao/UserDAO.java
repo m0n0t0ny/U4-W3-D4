@@ -1,47 +1,40 @@
 package AntonioBertuccio.dao;
 
 import AntonioBertuccio.entities.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import java.util.UUID;
+import javax.persistence.EntityManagerFactory;
 
 public class UserDAO {
-  private final EntityManager em;
+  private final EntityManagerFactory emf;
+  private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
-  public UserDAO(EntityManager em) {
-    this.em = em;
+  public UserDAO(EntityManagerFactory emf) {
+    this.emf = emf;
   }
 
-  public void save(User user) {
-    EntityTransaction transaction = em.getTransaction();
-    System.out.println("⚪ Initialising transaction.");
-    transaction.begin();
-    System.out.println("⚪ Adding new object to Persistence Context.");
-    em.persist(user);
-    System.out.println("⚪ Writing on database.");
-    transaction.commit();
-    System.out.println("🟢 New data added.");
+  public void addUser(User user) {
+    EntityManager em = emf.createEntityManager();
+    em.getTransaction().begin();
+    try {
+      em.persist(user);
+      em.getTransaction().commit();
+    } catch (Exception e) {
+      logger.error("Errore nell'aggiungere l'utente: ", e);
+      em.getTransaction().rollback();
+    } finally {
+      em.close();
+    }
   }
 
-  public User findById(UUID id) {
-    return em.find(User.class, id);
-  }
-
-  public void findByIdAndDelete(UUID id) {
-    User found = em.find(User.class, id);
-    System.out.println("⚪ Searching object by id 🔎.");
-    if (found != null) {
-      EntityTransaction transaction = em.getTransaction();
-      System.out.println("⚪ Initialising transaction 🔀.");
-      transaction.begin();
-      System.out.println("⚪ Adding new object to Persistence Context.");
-      em.remove(found);
-      System.out.println("⚪ Deleting object from database.");
-      transaction.commit();
-      System.out.println("🟢 Object deleted ❌.");
-    } else {
-      System.out.println("🔴 L'oggetto con uuid" + id + "non é stato trovato.");
+  public User findUserByCardNumber(String cardNumber) {
+    EntityManager em = emf.createEntityManager();
+    try {
+      return em.find(User.class, cardNumber);
+    } finally {
+      em.close();
     }
   }
 }

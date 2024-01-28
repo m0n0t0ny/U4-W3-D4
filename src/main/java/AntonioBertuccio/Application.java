@@ -2,49 +2,44 @@ package AntonioBertuccio;
 
 import AntonioBertuccio.dao.UserDAO;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import AntonioBertuccio.dao.*;
+import AntonioBertuccio.entities.*;
+import AntonioBertuccio.enums.Genre;
+
 public class Application {
-  private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("u4w3d4");
-
   public static void main(String[] args) {
-    EntityManager em = emf.createEntityManager();
-    LibraryDAO db = new LibraryDAO(em);
-    UserDAO pd = new UserDAO(em);
+    System.out.println("Creazione dell'Entity Manager Factory (emf) per l'accesso al database.");
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("u4w3d4");
 
-    try {
+    System.out.println("Creazione DAO...");
+    CatalogDAO catalogDAO = new CatalogDAO(emf);
+    BookDAO bookDAO = new BookDAO(emf);
+    MagazineDAO magazineDAO = new MagazineDAO(emf);
+    UserDAO userDAO = new UserDAO(emf);
+    LoanDAO loanDAO = new LoanDAO(emf);
 
-//      ---------- Save on DB 💾 ----------
-//      Book capodanno = new Book("Capodanno", LocalDate.of(2023, 12, 31), "Festeggiamo insieme l'ultimo giorno del 2023 🎉", EventType.PRIVATE, 255);
-//      db.save(capodanno);
-//      User chiaraPuleio = new User("Chiara", "Puleio", LocalDate.of(1994, 10, 29));
-//      pd.save((chiaraPuleio));
+    // 📚 Aggiunta nuovi elementi
+    Book book = new Book();
+    book.setIsbn("1234567890123");
+    book.setYear(2022);
+    book.setPages(200);
+    book.setAuthor("John Doe");
+    book.setGenre(Genre.FICTION);
+    bookDAO.addBook(book);
 
-//      ---------- Search from DB 🔎 ----------
-//      UUID id = UUID.fromString("6a5b66fc-3561-4954-adcf-8cdfae0da3e5");
-//      Event capodannoFromDB = db.findById(id);
-//      if (capodannoFromDB != null) {
-//        System.out.println(capodannoFromDB);
-//      }
-//      else {
-//        System.out.println("🔴 L'oggetto con uuid " + id + " non é stato trovato.");
-//      }
-
-//      ---------- Find and Delete ❌ ----------
-//      db.findByIdAndDelete(UUID.fromString("86644ea7-74dc-427f-b0e7-da55e1f72564"));
-
-    } catch (Exception ex) {
-      System.err.println(ex.getMessage());
-
-    } finally {
-      System.out.println("🟢 Entity manager (em) closed ❌.");
-      em.close();
-      emf.close();
-      System.out.println("🟢 Entity manager factory (emf) closed ❌.");
-      System.out.println("🟢 End of all processes from main.");
+    // 🔎 Ricerca libri per ISBN
+    String isbnToSearch = "1234567890123";
+    Book foundBook = bookDAO.findBookByIsbn(isbnToSearch);
+    if (foundBook != null) {
+      System.out.println("Libro trovato: " + foundBook.getTitle());
+    } else {
+      System.out.println("Nessun libro trovato con ISBN: " + isbnToSearch);
     }
 
+    System.out.println("Chiusura dell EntityManagerFactory alla fine dell'applicazione");
+    emf.close();
   }
 }

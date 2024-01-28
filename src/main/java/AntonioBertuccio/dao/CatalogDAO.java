@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class CatalogDAO {
   private final EntityManagerFactory emf;
@@ -51,6 +53,21 @@ public class CatalogDAO {
     } catch (Exception e) {
       logger.error("Errore nella rimozione dell'elemento con ISBN: " + isbn, e);
       em.getTransaction().rollback();
+    } finally {
+      em.close();
+    }
+  }
+
+  public List<Catalog> searchByTitle(String title) {
+    EntityManager em = emf.createEntityManager();
+    try {
+      TypedQuery<Catalog> query = em.createQuery(
+              "SELECT c FROM Catalog c WHERE LOWER(c.title) LIKE LOWER(:title)", Catalog.class);
+      query.setParameter("title", "%" + title + "%");
+      return query.getResultList();
+    } catch (Exception e) {
+      logger.error("Errore nella ricerca per titolo: ", e);
+      return null;
     } finally {
       em.close();
     }

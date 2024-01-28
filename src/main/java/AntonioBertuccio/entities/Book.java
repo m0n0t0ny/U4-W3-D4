@@ -7,12 +7,21 @@ import javax.persistence.*;
 @Entity
 @Table(name = "books")
 public class Book extends Catalog {
+  private String title;
   private String author;
   @Enumerated
   private Genre genre;
 
   public String getAuthor() {
     return author;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public void setAuthor(String author) {
