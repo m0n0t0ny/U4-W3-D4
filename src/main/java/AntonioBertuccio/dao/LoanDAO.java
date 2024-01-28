@@ -26,7 +26,7 @@ public class LoanDAO {
       query.setParameter("cardNumber", cardNumber);
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca dei prestiti per l'utente: ", e);
+      logger.error("🔴 Errore nella ricerca dei prestiti per l'utente: ", e);
       return null;
     } finally {
       em.close();
@@ -42,7 +42,7 @@ public class LoanDAO {
       query.setParameter("currentDate", currentDate);
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca dei prestiti scaduti: ", e);
+      logger.error("🔴 Errore nella ricerca dei prestiti scaduti: ", e);
       return null;
     } finally {
       em.close();

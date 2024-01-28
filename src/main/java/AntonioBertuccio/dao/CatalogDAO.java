@@ -16,14 +16,14 @@ public class CatalogDAO {
     this.emf = emf;
   }
 
-  public void addCatalogItem(Catalog item) {
+  public void addItem(Catalog item) {
     EntityManager em = emf.createEntityManager();
     try {
       em.getTransaction().begin();
       em.persist(item);
       em.getTransaction().commit();
     } catch (Exception e) {
-      logger.error("Errore nell'aggiungere l'elemento: ", e);
+      logger.error("🔴 Errore nell'aggiungere l'elemento: ", e);
       if (em.getTransaction().isActive()) {
         em.getTransaction().rollback();
       }
@@ -41,17 +41,19 @@ public class CatalogDAO {
     }
   }
 
-  public void deleteCatalogItemByIsbn(String isbn) {
+  public void deleteByIsbn(String isbn) {
     EntityManager em = emf.createEntityManager();
     try {
       em.getTransaction().begin();
       Catalog item = em.find(Catalog.class, isbn);
       if (item != null) {
         em.remove(item);
+      } else {
+        logger.info("🔴 ISBN '" + isbn + "' non trovato.");
       }
       em.getTransaction().commit();
     } catch (Exception e) {
-      logger.error("Errore nella rimozione dell'elemento con ISBN: " + isbn, e);
+      logger.error("🔴 Errore nella rimozione dell'elemento con ISBN: " + isbn, e);
       if (em.getTransaction().isActive()) {
         em.getTransaction().rollback();
       }
@@ -68,7 +70,22 @@ public class CatalogDAO {
       query.setParameter("title", "%" + title + "%");
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca per titolo: ", e);
+      logger.error("🔴 Errore nella ricerca per titolo: ", e);
+      return null;
+    } finally {
+      em.close();
+    }
+  }
+
+  public List<Catalog> searchByYear(int year) {
+    EntityManager em = emf.createEntityManager();
+    try {
+      TypedQuery<Catalog> query = em.createQuery(
+              "SELECT c FROM Catalog c WHERE c.year = :year", Catalog.class);
+      query.setParameter("year", year);
+      return query.getResultList();
+    } catch (Exception e) {
+      logger.error("🔴 Errore nella ricerca per anno: " + year, e);
       return null;
     } finally {
       em.close();

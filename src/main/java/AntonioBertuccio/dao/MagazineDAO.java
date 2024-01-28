@@ -21,7 +21,7 @@ public class MagazineDAO {
   }
 
   public void addMagazine(Magazine magazine) {
-    catalogDAO.addCatalogItem(magazine);
+    catalogDAO.addItem(magazine);
   }
 
   public Magazine findMagazineByIsbn(String isbn) {
@@ -29,13 +29,13 @@ public class MagazineDAO {
     if (item instanceof Magazine) {
       return (Magazine) item;
     } else {
-      logger.info("Nessuna rivista trovata con ISBN: " + isbn);
+      logger.info("🔴 Nessuna rivista trovata con ISBN: " + isbn);
       return null;
     }
   }
 
   public void deleteByIsbn(String isbn) {
-    catalogDAO.deleteCatalogItemByIsbn(isbn);
+    catalogDAO.deleteByIsbn(isbn);
   }
 
   public List<Magazine> searchByTitle(String title) {
@@ -46,7 +46,7 @@ public class MagazineDAO {
       query.setParameter("title", "%" + title + "%");
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca per titolo: ", e);
+      logger.error("🔴 Errore nella ricerca per titolo: ", e);
       return null;
     } finally {
       em.close();

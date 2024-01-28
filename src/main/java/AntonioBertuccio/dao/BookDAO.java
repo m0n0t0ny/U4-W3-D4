@@ -21,7 +21,7 @@ public class BookDAO {
   }
 
   public void addBook(Book book) {
-    catalogDAO.addCatalogItem(book);
+    catalogDAO.addItem(book);
   }
 
   public Book findBookByIsbn(String isbn) {
@@ -34,7 +34,7 @@ public class BookDAO {
   }
 
   public void deleteByIsbn(String isbn) {
-    catalogDAO.deleteCatalogItemByIsbn(isbn);
+    catalogDAO.deleteByIsbn(isbn);
   }
 
   public List<Book> findByAuthor(String author) {
@@ -44,7 +44,7 @@ public class BookDAO {
       query.setParameter("author", author);
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca per autore: ", e);
+      logger.error("🔴 Errore nella ricerca per autore: ", e);
       return null;
     } finally {
       em.close();
@@ -58,7 +58,7 @@ public class BookDAO {
       query.setParameter("genre", genre);
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca per genere: ", e);
+      logger.error("🔴 Errore nella ricerca per genere: ", e);
       return null;
     } finally {
       em.close();
@@ -73,7 +73,7 @@ public class BookDAO {
       query.setParameter("title", "%" + title + "%");
       return query.getResultList();
     } catch (Exception e) {
-      logger.error("Errore nella ricerca per titolo: ", e);
+      logger.error("🔴 Errore nella ricerca per titolo: ", e);
       return null;
     } finally {
       em.close();

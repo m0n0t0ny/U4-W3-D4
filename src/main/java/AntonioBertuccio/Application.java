@@ -4,19 +4,21 @@ import AntonioBertuccio.dao.*;
 import AntonioBertuccio.entities.Book;
 import AntonioBertuccio.entities.Magazine;
 import AntonioBertuccio.entities.User;
+import AntonioBertuccio.entities.Catalog;
 import AntonioBertuccio.enums.Periodicity;
 import com.github.javafaker.Faker;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.List;
 import java.util.Random;
 
 public class Application {
   public static void main(String[] args) {
-    System.out.println("Creazione dell'Entity Manager Factory (emf) per l'accesso al database.");
+    System.out.println("⚪ Creazione dell'Entity Manager Factory (emf) per l'accesso al database.");
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("u4w3d4");
 
-    System.out.println("Creazione DAO...");
+    System.out.println("⚪ Creazione DAO...");
     Faker faker = new Faker();
     CatalogDAO catalogDAO = new CatalogDAO(emf);
     BookDAO bookDAO = new BookDAO(emf);
@@ -36,6 +38,10 @@ public class Application {
     Magazine magazine = new Magazine(faker.book().title(), faker.number().numberBetween(2010, 2024), faker.number().numberBetween(10, 100), getRandomPeriodicity());
     magazineDAO.addMagazine(magazine);
 
+    // 🗑 Rimuovi elemento per ISBN
+    String isbnToRemove = "9791828958550";
+    catalogDAO.deleteByIsbn(isbnToRemove);
+
     // 🔎 Ricerca libri per ISBN
     String searchIsbn = "9791828958550";
     Book foundBook = bookDAO.findBookByIsbn(searchIsbn);
@@ -45,9 +51,23 @@ public class Application {
       System.out.println("❌ Nessun libro trovato con ISBN: " + searchIsbn);
     }
 
-    // 🗑 Rimuovi elemento per ISBN
-    String isbnToRemove = "9791828958550";
-    catalogDAO.deleteCatalogItemByIsbn(isbnToRemove);
+    // 🔎 Ricerca per anno
+    int searchYear = 2014;
+    List<Catalog> foundItems = catalogDAO.searchByYear(searchYear);
+
+    if (foundItems != null && !foundItems.isEmpty()) {
+      System.out.println("🟢 Elementi trovati nel 2014:");
+
+      for (Catalog item : foundItems) {
+        if (item instanceof Book bookItem) {
+          System.out.println("⚪ Titolo libro: " + bookItem.getTitle() + ", Autore: " + bookItem.getAuthor());
+        } else if (item instanceof Magazine magazineItem) {
+          System.out.println("⚪ Titolo rivista: " + magazineItem.getTitle() + ", Periodicità: " + magazineItem.getPeriodicity());
+        }
+      }
+    } else {
+      System.out.println("🔴 Nessun elemento trovato con anno di pubblicazione " + searchYear);
+    }
 
     System.out.println("🔴 Chiusura dell EntityManagerFactory alla fine dell'applicazione");
     emf.close();
