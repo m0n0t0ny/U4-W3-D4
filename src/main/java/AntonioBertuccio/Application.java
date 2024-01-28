@@ -1,15 +1,14 @@
 package AntonioBertuccio;
 
 import AntonioBertuccio.dao.*;
-import AntonioBertuccio.entities.Book;
-import AntonioBertuccio.entities.Catalog;
-import AntonioBertuccio.entities.Magazine;
-import AntonioBertuccio.entities.User;
+import AntonioBertuccio.entities.*;
 import AntonioBertuccio.enums.Periodicity;
 import com.github.javafaker.Faker;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -101,8 +100,34 @@ public class Application {
       System.out.println("🔴 Nessun elemento trovato che contenga la parola '" + searchKeyword + "' all'interno del proprio titolo.");
     }
 
+    long cardNumberToSearch = 36;
+    long isbnToSearch = 2147483647;
 
-    System.out.println("🔴 Chiusura dell EntityManagerFactory alla fine dell'applicazione");
+    User userId = userDAO.searchUserByCardNumber(String.valueOf(cardNumberToSearch));
+    Catalog catalogId = catalogDAO.searchByIsbn(String.valueOf(isbnToSearch));
+
+    Catalog catalog = null;
+    if (user != null && catalog != null) {
+      Loan loan = new Loan();
+      loan.setUser(user);
+      loan.setCatalog(catalog);
+      loan.setStartDate(new Date());
+      loan.setDueDate(calculateDueDate());
+      loan.setReturnDate(null);
+
+      loanDAO.addLoan(loan);
+
+      System.out.println("Loan created and saved successfully:");
+      System.out.println("Loan ID: " + loan.getUser());
+      System.out.println("User: " + loan.getUser().getFirstName() + loan.getUser().getLastName());
+      System.out.println("Catalog Title: " + loan.getCatalog().getTitle());
+      System.out.println("Start Date: " + loan.getStartDate());
+      System.out.println("Due Date: " + loan.getDueDate());
+    } else {
+      System.out.println("User or Catalog not found in the database.");
+    }
+
+    System.out.println("🔴 Chiusura dell'EntityManagerFactory alla fine dell'applicazione");
     emf.close();
   }
 
@@ -110,5 +135,12 @@ public class Application {
     Periodicity[] values = Periodicity.values();
     int randomIndex = new Random().nextInt(values.length);
     return values[randomIndex];
+  }
+
+  private static Date calculateDueDate() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.DAY_OF_MONTH, 30);
+    return calendar.getTime();
   }
 }

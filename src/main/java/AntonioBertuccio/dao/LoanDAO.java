@@ -18,12 +18,27 @@ public class LoanDAO {
     this.emf = emf;
   }
 
-  public List<Loan> findLoansByUserCardNumber(String cardNumber) {
+  public void addLoan(Loan loan) {
+    EntityManager em = emf.createEntityManager();
+    try {
+      em.getTransaction().begin();
+      em.persist(loan);
+      em.getTransaction().commit();
+      logger.info("🟢 Prestito creato e salvato con successo.");
+    } catch (Exception e) {
+      em.getTransaction().rollback();
+      logger.error("🔴 Errore durante la creazione del prestito: ", e);
+    } finally {
+      em.close();
+    }
+  }
+
+  public List<Loan> searchLoanByUserId(Long userId) {
     EntityManager em = emf.createEntityManager();
     try {
       TypedQuery<Loan> query = em.createQuery(
-              "SELECT l FROM Loan l WHERE l.user.cardNumber = :cardNumber AND l.actualReturnDate IS NULL", Loan.class);
-      query.setParameter("cardNumber", cardNumber);
+              "SELECT l FROM Loan l WHERE l.user.id = :userId", Loan.class);
+      query.setParameter("userId", userId);
       return query.getResultList();
     } catch (Exception e) {
       logger.error("🔴 Errore nella ricerca dei prestiti per l'utente: ", e);
@@ -33,12 +48,12 @@ public class LoanDAO {
     }
   }
 
-  public List<Loan> findOverdueLoans() {
+  public List<Loan> searchByOutdatedLoans() {
     EntityManager em = emf.createEntityManager();
     try {
       Date currentDate = new Date();
       TypedQuery<Loan> query = em.createQuery(
-              "SELECT l FROM Loan l WHERE l.dueDate < :currentDate AND l.actualReturnDate IS NULL", Loan.class);
+              "SELECT l FROM Loan l WHERE l.dueDate < :currentDate AND l.returnDate IS NULL", Loan.class);
       query.setParameter("currentDate", currentDate);
       return query.getResultList();
     } catch (Exception e) {

@@ -29,10 +29,12 @@ public class UserDAO {
     em.close();
   }
 
-  public User findUserByCardNumber(String cardNumber) {
+  public User searchUserByCardNumber(String cardNumber) {
     EntityManager em = emf.createEntityManager();
     try {
       return em.find(User.class, cardNumber);
+    } catch (NumberFormatException e) {
+      return null;
     } finally {
       em.close();
     }

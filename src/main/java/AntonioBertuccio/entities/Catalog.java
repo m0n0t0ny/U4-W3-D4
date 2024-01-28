@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Catalog {
   @Id
-  private String isbn;
+  private long isbn;
   private String title;
   private int year;
   private int pages;
@@ -42,9 +42,17 @@ public abstract class Catalog {
 
   public Catalog(String title, int year, int pages) {
     Faker faker = new Faker();
-    this.isbn = faker.code().isbn13();
+    this.isbn = faker.number().numberBetween(1111111111, 2147483647);
     this.title = title;
     this.year = year;
     this.pages = pages;
+  }
+
+  public long getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(long isbn) {
+    this.isbn = isbn;
   }
 }
